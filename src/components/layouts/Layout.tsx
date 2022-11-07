@@ -3,6 +3,7 @@ import { IoMdArrowUp } from 'react-icons/io';
 import Scrollbar from 'smooth-scrollbar';
 
 import EdgeEasingPlugin from '../../lib/EdgeEasingPlugin';
+import ScaleSpeedPlugin from '../../lib/ScaleSpeedPlugin';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 
@@ -17,7 +18,8 @@ export default function Layout(props: { children: ReactNode }) {
   useEffect(() => {
     if (isMobile) return;
 
-    Scrollbar.use(EdgeEasingPlugin);
+    // 順番大事!
+    Scrollbar.use(ScaleSpeedPlugin, EdgeEasingPlugin);
     const scrollbar = Scrollbar.init(ref.current as HTMLElement, {
       damping: 0.1,
       plugins: { scaleSpeed: { speed: 0.6 } },
