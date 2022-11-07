@@ -1,38 +1,53 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useRef } from 'react';
+import { IoMdArrowUp } from 'react-icons/io';
 import Scrollbar from 'smooth-scrollbar';
 
 import EdgeEasingPlugin from '../../lib/EdgeEasingPlugin';
-import ScaleSpeedPlugin from '../../lib/ScaleSpeedPlugin';
 import Footer from '../sections/Footer';
 import Header from '../sections/Header';
 
+const isMobile =
+  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    typeof navigator === 'undefined' ? '' : navigator.userAgent,
+  );
+
 export default function Layout(props: { children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    Scrollbar.use(ScaleSpeedPlugin, EdgeEasingPlugin);
-    const scrollbar = Scrollbar.initAll({
-      damping: 0.1,
-      alwaysShowTracks: true,
+    Scrollbar.use(EdgeEasingPlugin);
+    const scrollbar = Scrollbar.init(ref.current as HTMLElement, {
+      damping: isMobile ? 0.05 : 0.1,
+      thumbMinSize: 20,
+      renderByPixels: !('ontouchstart' in document),
       plugins: {
         scaleSpeed: { speed: 0.6 },
       },
     });
-    return () => {
-      scrollbar.map(x => x.destroy());
-    };
+
+    return () => scrollbar.destroy();
   }, []);
+
+  const backToTop = () => {
+    const scrollbar = Scrollbar.get(ref.current as HTMLElement);
+    scrollbar?.scrollTo(0, 0, 600);
+  };
 
   return (
     <>
-      <div data-scrollbar className="flex flex-col w-screen h-screen">
+      <div ref={ref} className="flex flex-col w-screen h-screen overflow-auto">
         <Header />
         <main className="grow">{props.children}</main>
         <Footer />
       </div>
 
       {/* fixed elements must be placed outside the data-scrollbar */}
-      <div className="fixed bottom-8 right-16 z-30 bg-blue-500 text-white px-4 rounded-md">
-        Fixed Element
-      </div>
+      <a
+        onClick={backToTop}
+        className="fixed bottom-8 right-16 p-2 rounded-full bg-blue-500 text-white text-2xl"
+      >
+        <IoMdArrowUp />
+      </a>
     </>
   );
 }
