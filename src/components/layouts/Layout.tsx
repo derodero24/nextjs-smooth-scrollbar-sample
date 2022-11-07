@@ -20,11 +20,7 @@ export default function Layout(props: { children: ReactNode }) {
     Scrollbar.use(EdgeEasingPlugin);
     const scrollbar = Scrollbar.init(ref.current as HTMLElement, {
       damping: 0.1,
-      thumbMinSize: 20,
-      renderByPixels: !('ontouchstart' in document),
-      plugins: {
-        scaleSpeed: { speed: 0.6 },
-      },
+      plugins: { scaleSpeed: { speed: 0.6 } },
     });
 
     return () => scrollbar.destroy();
