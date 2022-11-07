@@ -14,6 +14,7 @@ const isMobile =
 
 export default function Layout(props: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isMobile) return;
@@ -30,7 +31,7 @@ export default function Layout(props: { children: ReactNode }) {
 
   const backToTop = () => {
     if (isMobile) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      topRef.current?.scrollIntoView({ behavior: 'smooth' });
     } else {
       const scrollbar = Scrollbar.get(ref.current as HTMLElement);
       scrollbar?.scrollTo(0, 0, 600);
@@ -40,6 +41,7 @@ export default function Layout(props: { children: ReactNode }) {
   return (
     <>
       <div ref={ref} className="flex flex-col w-screen h-screen overflow-auto">
+        <div ref={topRef} />
         <Header />
         <main className="grow">{props.children}</main>
         <Footer />
