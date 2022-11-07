@@ -15,9 +15,11 @@ export default function Layout(props: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isMobile) return;
+
     Scrollbar.use(EdgeEasingPlugin);
     const scrollbar = Scrollbar.init(ref.current as HTMLElement, {
-      damping: isMobile ? 0.05 : 0.1,
+      damping: 0.1,
       thumbMinSize: 20,
       renderByPixels: !('ontouchstart' in document),
       plugins: {
@@ -29,8 +31,12 @@ export default function Layout(props: { children: ReactNode }) {
   }, []);
 
   const backToTop = () => {
-    const scrollbar = Scrollbar.get(ref.current as HTMLElement);
-    scrollbar?.scrollTo(0, 0, 600);
+    if (isMobile) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    } else {
+      const scrollbar = Scrollbar.get(ref.current as HTMLElement);
+      scrollbar?.scrollTo(0, 0, 600);
+    }
   };
 
   return (
@@ -44,7 +50,7 @@ export default function Layout(props: { children: ReactNode }) {
       {/* fixed elements must be placed outside the data-scrollbar */}
       <a
         onClick={backToTop}
-        className="fixed bottom-8 right-16 p-2 rounded-full bg-blue-500 text-white text-2xl"
+        className="fixed bottom-8 right-8 p-2 rounded-full bg-blue-500 text-white text-2xl"
       >
         <IoMdArrowUp />
       </a>
